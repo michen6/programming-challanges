@@ -1,0 +1,47 @@
+import java.lang.reflect.Array;
+import java.util.*;
+
+
+public class MultiSelect extends Select {
+
+  public static <T> Map<Integer, Comparable<T>> multiselect(Comparable<T>[] a, int[] bins) {
+		SortedSet<Integer> binset = new TreeSet<Integer>();
+		Map<Integer, Comparable<T>> order = new TreeMap<Integer, Comparable<T>>();
+		for (int bin : bins) {
+			binset.add(bin);
+		}
+		
+		multiselect(a, 0, a.length - 1, binset, order);
+		return order;
+	}
+	
+	public static <T> void multiselect(Comparable<T>[] a, int lo, int hi, SortedSet<Integer> binset, Map<Integer, Comparable<T>> order) {
+		if (lo == hi) {
+			return;
+		}
+		
+		int j = Select.partition(a, lo, hi);
+		
+		if (binset.contains(j)) {
+			order.put(j, a[j]);
+			if (j != lo) multiselect(a, lo, j - 1, binset.headSet(j - 1), order);
+			if (j != hi) multiselect(a, j + 1, hi, binset.tailSet(j + 1), order);
+		} else {
+			if (j != lo) multiselect(a, lo, j - 1, binset.headSet(j), order);
+			if (j != hi) multiselect(a, j + 1, hi, binset.tailSet(j + 1), order);
+		}
+	}
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub
+		Integer[] data = new Integer[] {7, 5, 6, 4, 3, 8, 9, 1, 2, 0};
+		
+		Map<Integer, Comparable<Integer>> order = multiselect(data, new int[] {4, 7});
+		System.out.println(order.toString());
+	} 
+
+}
